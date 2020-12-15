@@ -1,20 +1,45 @@
 package edu;
 
 public class GameConsole implements Powered {
-    private String brand;
+    private final String brand;
     private String model;
-    private String serial;
-    private String firstGame_pad;
-    private String secondGame_pad;
+    private final String serial;
+    private final Gamepad firstGame_pad;
+    private final Gamepad secondGame_pad;
     private boolean isOn;
+    private Game activeGame;
 
     public GameConsole(String brand, String serial) {
         this.brand = brand;
         this.serial = serial;
+        firstGame_pad = new Gamepad(brand, 1);
+        secondGame_pad = new Gamepad(brand, 2);
     }
 
-    public GameConsole() {
+    void loadGame(Game game) {
+        activeGame = game;
+        System.out.println("Игра " + game.getName() + " загружается");
     }
+
+    void playGame() {
+        if (!isOn) {
+            System.out.println("Играем в " + activeGame.getName());
+            Gamepad[] gamepads = {firstGame_pad, secondGame_pad};
+            for (Gamepad gamepad : gamepads) {
+                if (gamepad.chargeLevel == 0.0) {
+                    gamepad.powerOff();
+                    System.out.println("Game over");
+                }
+                else if (!gamepad.isOn) {
+                    gamepad.chargeLevel -= 10f;
+                    System.out.println("Заряд джойстика " + gamepad.connectedNumber + " " + gamepad.chargeLevel);
+                }
+            }
+
+        }
+
+    }
+
 
     @Override
     public void powerOn() {
@@ -22,24 +47,24 @@ public class GameConsole implements Powered {
     }
 
     @Override
-    public void powerOf() {
+    public void powerOff() {
         System.out.println(isOn = false);
     }
 
+
     class Gamepad implements Powered {
-        private String brand;
-        private String consoleSerial = serial;
-        private String connectedNumber;
+        private final String brand;
+        private final String consoleSerial;
+        private int connectedNumber;
         private String color;
         public float chargeLevel = 100.0f;
         private boolean isOn;
 
-        Gamepad(String brand, String connectedNumber) {
+
+        Gamepad(String brand, int connectedNumber) {
             this.brand = brand;
             this.connectedNumber = connectedNumber;
-            GameConsole console = new GameConsole();
-            console.setFirstGame_pad("Joystick_1");
-            console.setSecondGame_pad("Joystick_2");
+            this.consoleSerial = serial;
 
         }
 
@@ -47,23 +72,15 @@ public class GameConsole implements Powered {
             return brand;
         }
 
-        public void setBrand(String brand) {
-            this.brand = brand;
-        }
-
         public String getConsoleSerial() {
             return consoleSerial;
         }
 
-        public void setConsoleSerial(String consoleSerial) {
-            this.consoleSerial = consoleSerial;
-        }
-
-        public String getConnectedNumber() {
+        public int getConnectedNumber() {
             return connectedNumber;
         }
 
-        public void setConnectedNumber(String connectedNumber) {
+        public void setConnectedNumber(int connectedNumber) {
             this.connectedNumber = connectedNumber;
         }
 
@@ -86,27 +103,27 @@ public class GameConsole implements Powered {
 
         @Override
         public void powerOn() {
-            if (Gamepad.this.isOn = true) {
-                GameConsole.this.powerOn();
-            }else {
-                GameConsole.this.powerOf();
+            isOn = true;
+            GameConsole.this.powerOn();
+            if (firstGame_pad.isOn) {
+                secondGame_pad.connectedNumber = 2;
+            } else {
+                secondGame_pad.connectedNumber = 1;
             }
-
         }
 
         @Override
-        public void powerOf() {
-
-            System.out.println(isOn = false);
+        public void powerOff() {
+            //TODO checking whether console is on
+            isOn = false;
+            if (firstGame_pad.isOn) {
+                secondGame_pad.connectedNumber = 1;
+            }
         }
     }
 
     public String getBrand() {
         return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
     }
 
     public String getModel() {
@@ -121,25 +138,14 @@ public class GameConsole implements Powered {
         return serial;
     }
 
-    public void setSerial(String serial) {
-        this.serial = serial;
-    }
-
-    public String getFirstGame_pad() {
+    public Gamepad getFirstGame_pad() {
         return firstGame_pad;
     }
 
-    public void setFirstGame_pad(String firstGame_pad) {
-        this.firstGame_pad = firstGame_pad;
-    }
-
-    public String getSecondGame_pad() {
+    public Gamepad getSecondGame_pad() {
         return secondGame_pad;
     }
 
-    public void setSecondGame_pad(String secondGame_pad) {
-        this.secondGame_pad = secondGame_pad;
-    }
 
     public boolean isOn() {
         return isOn;
@@ -148,6 +154,7 @@ public class GameConsole implements Powered {
     public void setOn(boolean on) {
         isOn = on;
     }
+
 
     @Override
     public String toString() {

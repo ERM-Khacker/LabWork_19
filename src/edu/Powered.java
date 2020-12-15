@@ -4,5 +4,5 @@ public interface Powered {
 
     void powerOn();
 
-    void powerOf();
+    void powerOff();
 }

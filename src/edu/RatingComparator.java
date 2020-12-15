@@ -6,7 +6,7 @@ public class RatingComparator implements Comparator<Game.VirtualGame> {
 
     @Override
     public int compare(Game.VirtualGame o1, Game.VirtualGame o2) {
-        return o1.getRating();
+        return Integer.compare(o1.getRating(), o2.getRating());
 
     }
 }

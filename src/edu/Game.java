@@ -47,7 +47,8 @@ public class Game {
         private int rating; //рейтинг игры от 0 до 5
         private final Game data;
 
-        private VirtualGame(String name, Genre genre) {
+        private VirtualGame(String name, Genre genre, int rating) {
+            this.rating = rating;
             data = new Game(name, genre, Type.VIRTUAL);
         }
 
@@ -69,8 +70,8 @@ public class Game {
         return new GameDisk(name, genre, description);
     }
 
-    static VirtualGame getVirtualGame(String name, Genre genre) {
-        return new VirtualGame(name, genre);
+    static VirtualGame getVirtualGame(String name, Genre genre, int rating) {
+        return new VirtualGame(name, genre, rating);
     }
 
 

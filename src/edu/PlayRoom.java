@@ -11,10 +11,10 @@ public class PlayRoom {
         disk[3] = Game.getDisk("Darksiders", Genre.ADVENTURES, "Неплохая игрушка");
 
         Game.VirtualGame[] netGames = new Game.VirtualGame[4];
-        netGames[0] = Game.getVirtualGame("some name1", Genre.RACE,5);
-        netGames[1] = Game.getVirtualGame("some name2", Genre.SPORT,2);
-        netGames[2] = Game.getVirtualGame("some name3", Genre.ACTION,3);
-        netGames[3] = Game.getVirtualGame("some name4", Genre.ADVENTURES,4);
+        netGames[0] = Game.getVirtualGame("some name1", Genre.RACE, 5);
+        netGames[1] = Game.getVirtualGame("some name2", Genre.SPORT, 2);
+        netGames[2] = Game.getVirtualGame("some name3", Genre.ACTION, 3);
+        netGames[3] = Game.getVirtualGame("some name4", Genre.ADVENTURES, 4);
 
         GameConsole console = new GameConsole("Sony Playstation", "#13141341");
         GenreComparator comparator = new GenreComparator();
@@ -29,17 +29,10 @@ public class PlayRoom {
         }
 
         console.loadGame(disk[1].getData());
-        console.playGame();
-        console.playGame();
-        console.playGame();
-        console.playGame();
-        console.playGame();
-        console.playGame();
-        console.playGame();
-        console.playGame();
-        console.playGame();
-        console.playGame();
-        console.playGame();
-
+        int count = 0;
+        while (count < 15) {
+            console.playGame();
+            count++;
+        }
     }
 }

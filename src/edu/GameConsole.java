@@ -1,6 +1,6 @@
 package edu;
 
-public class GameConsole implements Powered {
+public class GameConsole extends MyException implements Powered {
     private final String brand;
     private String model;
     private final String serial;
@@ -8,6 +8,7 @@ public class GameConsole implements Powered {
     private final Gamepad secondGame_pad;
     private boolean isOn;
     private Game activeGame;
+    private int waitingCounter;
 
     public GameConsole(String brand, String serial) {
         this.brand = brand;
@@ -29,15 +30,29 @@ public class GameConsole implements Powered {
                 if (gamepad.chargeLevel == 0.0) {
                     gamepad.powerOff();
                     System.out.println("Game over");
-                }
-                else if (!gamepad.isOn) {
+                } else if (!gamepad.isOn) {
                     gamepad.chargeLevel -= 10f;
                     System.out.println("Заряд джойстика " + gamepad.connectedNumber + " " + gamepad.chargeLevel);
                 }
             }
-
         }
+        checkStatus();
+    }
 
+    private void checkStatus() {
+        if (firstGame_pad.chargeLevel < 10.0 & secondGame_pad.chargeLevel < 10.0) {
+            System.out.println("Подключите джойстик " + ++waitingCounter);
+            try {
+                if (waitingCounter > 5) throw new MyException();
+                {
+                    powerOff();
+                }
+            } catch (MyException ex) {
+                System.err.println("Приставка завершает работу из-за отсутствия активности");
+            }
+        } else {
+            System.out.println(waitingCounter = 0);
+        }
     }
 
 
@@ -120,6 +135,7 @@ public class GameConsole implements Powered {
                 secondGame_pad.connectedNumber = 1;
             }
         }
+
     }
 
     public String getBrand() {
@@ -153,6 +169,10 @@ public class GameConsole implements Powered {
 
     public void setOn(boolean on) {
         isOn = on;
+    }
+
+    public int getWaitingCounter() {
+        return waitingCounter;
     }
 
 

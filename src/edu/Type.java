@@ -1,6 +1,6 @@
 package edu;
 
-public enum  Type {
+public enum Type {
     VIRTUAL,
     PHYSICAL;
 }

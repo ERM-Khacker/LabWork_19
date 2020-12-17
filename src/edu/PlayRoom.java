@@ -1,6 +1,13 @@
 package edu;
 
 import java.util.Arrays;
+/*3.  Создать класс PlayRoom
+        •  Создать main метод.
+        •  Создать массив с играми на физ. носителях (4 игры). (пользуемся методом
+        getDisk)
+        •  Создать массив с играми из виртуального магазина (4 игры). (пользуемся
+        методом getVirtualGame)
+        •  Создать GameConsole.*/
 
 public class PlayRoom {
     public static void main(String[] args) {
@@ -17,11 +24,13 @@ public class PlayRoom {
         netGames[3] = Game.getVirtualGame("some name4", Genre.ADVENTURES, 4);
 
         GameConsole console = new GameConsole("Sony Playstation", "#13141341");
+//        •  В методе main, отсортировать массив с физическими дисками по жанру
         GenreComparator comparator = new GenreComparator();
         Arrays.sort(disk, comparator);
         for (int i = 0; i < disk.length; i++) {
             System.out.println(disk[i].getData().getGenre());
         }
+//        •  В методе main, отсортировать массив с виртуальными играми по рейтингу.
         RatingComparator ratingComparator = new RatingComparator();
         Arrays.sort(netGames, ratingComparator);
         for (Game.VirtualGame netGame : netGames) {

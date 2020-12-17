@@ -1,31 +1,56 @@
 package edu;
+      /*1.Реализация внутреннего класса
+       •Создать класс GameConsole.
+        Описать поля:
+        brand (название производителя, например Sony, Microsoft. Можно оформить enum-ом),
+        model (название модели, например XBOX 360, PS4 PRO),
+        serial (серийный номер приставки, например XC123QeWR),
+        firstGamepad (объект для первого джойстика, который будет реализован как
+        внутренний класс),
+        secondGamepad (объект для второго джойстика),
+        isOn (флаг состояния. True – вкл, false - выкл)*/
 
 public class GameConsole extends MyException implements Powered {
     private final String brand;
     private String model;
     private final String serial;
-    private final Gamepad firstGame_pad;
-    private final Gamepad secondGame_pad;
+    private final Gamepad firstGamePad;
+    private final Gamepad secondGamePad;
     private boolean isOn;
+    // •  Добавить поле Game activeGame
     private Game activeGame;
+    //    Добавить новое поле для класса GameConsole – waitingCounter;
     private int waitingCounter;
+
+//  • Создать конструктор для класса GameConsole. Передать в него 2 параметра (brand, serial)
+//  • Внутри конструктора создать и присвоить 2 джойстика (firstGamepad, secondGamepad). Причем brand можно передать уже существующие для самой
+//    консоли, а connectedNumber фиксированными значениями 1 и 2.
+//    •  Для полей которые не должны меняться (определите их сами :) ), применить
+//       модификатор final, и создать геттеры.
+//    • Для остальных полей создать геттеры и сеттеры.
 
     public GameConsole(String brand, String serial) {
         this.brand = brand;
         this.serial = serial;
-        firstGame_pad = new Gamepad(brand, 1);
-        secondGame_pad = new Gamepad(brand, 2);
+        firstGamePad = new Gamepad(brand, 1);
+        secondGamePad = new Gamepad(brand, 2);
     }
 
+    //•  Добавить метод loadGame(Game). В нем вывести сообщение «Игра
+//    {название} загружается»
     void loadGame(Game game) {
         activeGame = game;
         System.out.println("Игра " + game.getName() + " загружается");
     }
 
+    /*    •  Добавить метод playGame(). В нем выводить информацию о текущей игре
+          «Играем в {игра}» и информацию о заряде только активных джойстиков.
+          Внимание! При каждом вызове метода – уменьшать заряд джойстика на 10%.
+        Когда заряд уменьшиться до 0 – нужно выключить джойстик.*/
     void playGame() {
         if (!isOn) {
             System.out.println("Играем в " + activeGame.getName());
-            Gamepad[] gamepads = {firstGame_pad, secondGame_pad};
+            Gamepad[] gamepads = {firstGamePad, secondGamePad};
             for (Gamepad gamepad : gamepads) {
                 if (gamepad.chargeLevel == 0.0) {
                     gamepad.powerOff();
@@ -39,8 +64,16 @@ public class GameConsole extends MyException implements Powered {
         checkStatus();
     }
 
+    //    •  Добавить приватный метод void checkStatus(). Который будет вызываться
+//    каждый раз когда вызывается метод playGame().
+/*Если оба джойстика выключены – выводить сообщение «Подключите
+    джойстик» и увеличивать счетчик на 1. Если хотя-бы один джойстик
+    активен – сбрасывать в 0.
+    Если счетчик превысил 5 циклов ожидания – «Выключить» приставку и
+    бросить исключение с текстом «Приставка завершает работу из-за
+    отсутствия активности» (Класс-исключение создать свой.)*/
     private void checkStatus() {
-        if (firstGame_pad.chargeLevel < 10.0 & secondGame_pad.chargeLevel < 10.0) {
+        if (firstGamePad.chargeLevel < 10.0 & secondGamePad.chargeLevel < 10.0) {
             System.out.println("Подключите джойстик " + ++waitingCounter);
             try {
                 if (waitingCounter > 5) throw new MyException();
@@ -55,7 +88,7 @@ public class GameConsole extends MyException implements Powered {
         }
     }
 
-
+    //•  Реализовать данный интерфейс для джойстика и консоли
     @Override
     public void powerOn() {
         System.out.println(isOn = true);
@@ -66,6 +99,14 @@ public class GameConsole extends MyException implements Powered {
         System.out.println(isOn = false);
     }
 
+/*      • Создать внутренний (нестатический) класс Gamepad.
+          Описать поля:
+          brand (название производителя, например Sony, Microsoft).
+          consoleSerial (серийный номер консоли, к которой подключен джойстик),
+          connectedNumber (порядковый номер джойстика),
+          color (цвет джойстика, можно оформить enum-ом),
+          chargeLevel (значение процента заряда, по умолчанию поставить 100.0)
+          isOn (флаг состояния. True – вкл, false - выкл).*/
 
     class Gamepad implements Powered {
         private final String brand;
@@ -75,7 +116,8 @@ public class GameConsole extends MyException implements Powered {
         public float chargeLevel = 100.0f;
         private boolean isOn;
 
-
+        /*•  Создать конструктор для класса Gamepad. Передать в него параметр (brand и
+             connectedNumber), а полю consoleSerial присвоить значение серийного номера приставки.*/
         Gamepad(String brand, int connectedNumber) {
             this.brand = brand;
             this.connectedNumber = connectedNumber;
@@ -115,15 +157,18 @@ public class GameConsole extends MyException implements Powered {
             isOn = on;
         }
 
+        //•  Реализовать данный интерфейс для джойстика и консоли
+        //•  Добавить функционал, который включает приставку, когда включается джойстик.
+        //•  Добавить функционал, который делает «второй» джойстик «первым», если первый был выключен.
 
         @Override
         public void powerOn() {
             isOn = true;
             GameConsole.this.powerOn();
-            if (firstGame_pad.isOn) {
-                secondGame_pad.connectedNumber = 2;
+            if (firstGamePad.isOn) {
+                secondGamePad.connectedNumber = 2;
             } else {
-                secondGame_pad.connectedNumber = 1;
+                secondGamePad.connectedNumber = 1;
             }
         }
 
@@ -131,8 +176,8 @@ public class GameConsole extends MyException implements Powered {
         public void powerOff() {
             //TODO checking whether console is on
             isOn = false;
-            if (firstGame_pad.isOn) {
-                secondGame_pad.connectedNumber = 1;
+            if (firstGamePad.isOn) {
+                secondGamePad.connectedNumber = 1;
             }
         }
 
@@ -154,12 +199,12 @@ public class GameConsole extends MyException implements Powered {
         return serial;
     }
 
-    public Gamepad getFirstGame_pad() {
-        return firstGame_pad;
+    public Gamepad getFirstGamePad() {
+        return firstGamePad;
     }
 
-    public Gamepad getSecondGame_pad() {
-        return secondGame_pad;
+    public Gamepad getSecondGamePad() {
+        return secondGamePad;
     }
 
 
@@ -175,15 +220,14 @@ public class GameConsole extends MyException implements Powered {
         return waitingCounter;
     }
 
-
     @Override
     public String toString() {
         return "GameConsole{" +
                 "brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", serial='" + serial + '\'' +
-                ", firstGame_pad='" + firstGame_pad + '\'' +
-                ", secondGame_pad='" + secondGame_pad + '\'' +
+                ", firstGame_pad='" + firstGamePad + '\'' +
+                ", secondGame_pad='" + secondGamePad + '\'' +
                 ", isOn=" + isOn +
                 '}';
     }
